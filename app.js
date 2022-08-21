@@ -49,7 +49,7 @@ app.get("/books/:id", (req, res) => {
         db.collection("books")
             .findOne({ _id: ObjectId(req.params.id) })
             .then((doc) => {
-                return res.status(200).json(doc);
+                res.status(200).json(doc);
             })
             .catch((error) => {
                 res.status(500).json({ error: "there is no book with that ID" });
@@ -72,6 +72,21 @@ app.post("/books", (req, res) => {
         });
 });
 
+app.delete("/books/:id", (req, res) => {
+    if (ObjectId.isValid(req.params.id)) {
+        db.collection("books")
+            .deleteOne({ _id: ObjectId(req.params.id) })
+            .then((result) => {
+                res.status(200).json(result);
+            })
+            .catch((error) => {
+                res.status(500).json({ error: "could not delete that object" });
+            });
+    } else {
+        res.status(500).json({ error: "not a vali id document" });
+    }
+});
+
 // book sample:
 
 // {
@@ -88,3 +103,5 @@ app.post("/books", (req, res) => {
 //     ]
 
 // }
+
+//   63022af6b47c83236766a097
