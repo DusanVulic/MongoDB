@@ -83,7 +83,26 @@ app.delete("/books/:id", (req, res) => {
                 res.status(500).json({ error: "could not delete that object" });
             });
     } else {
-        res.status(500).json({ error: "not a vali id document" });
+        res.status(500).json({ error: "not a valid  document id" });
+    }
+});
+
+app.patch("/books/:id", (req, res) => {
+    const updates = req.body;
+
+    if (ObjectId.isValid(req.params.id)) {
+        db.collection("books")
+            .updateOne({ _id: ObjectId(req.params.id) }, {
+                $set: updates,
+            })
+            .then((result) => {
+                res.status(200).json(result);
+            })
+            .catch((error) => {
+                res.status(500).json({ error: "could not update document" });
+            });
+    } else {
+        res.status(500).json({ error: "could not update document" });
     }
 });
 
@@ -104,4 +123,4 @@ app.delete("/books/:id", (req, res) => {
 
 // }
 
-//   63022af6b47c83236766a097
+//   63022a618185b439cca5d511
