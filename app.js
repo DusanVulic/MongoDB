@@ -11,6 +11,8 @@ const { ObjectId } = require("mongodb");
 
 const app = express();
 
+app.use(express.json());
+
 // db connection
 
 let db;
@@ -56,3 +58,33 @@ app.get("/books/:id", (req, res) => {
         res.status(500).json({ error: "not a vali id document" });
     }
 });
+
+app.post("/books", (req, res) => {
+    const book = req.body;
+
+    db.collection("books")
+        .insertOne(book)
+        .then((result) => {
+            res.status(201).json(result);
+        })
+        .catch((error) => {
+            res.status(500).json({ error: "could not create document" });
+        });
+});
+
+// book sample:
+
+// {
+//     "title":"dusanovo putesestvije",
+//     "author":"Dusan Vulic",
+//     "rating":9,
+//     "pages":430,
+//     "genres":[
+//         "fantasy", "magic"
+//     ],
+//     "reviews":[
+//         {"name":"bagzi","body":"great book"},
+//         {"name":"duki","body":"awesome"}
+//     ]
+
+// }
