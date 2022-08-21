@@ -2,16 +2,39 @@ console.log("hello");
 
 const express = require("express");
 
+const { connectDb, getDb } = require("./db");
+
 //init app and middleware
 
 const app = express();
 
-app.listen(3000, () => {
-    console.log("app listening on port 3000");
+// db connection
+
+let db;
+connectDb((err) => {
+    if (!err) {
+        app.listen(3000, () => {
+            console.log("app listening on port 3000");
+        });
+        db = getDb();
+    }
 });
 
 /// routes
 
 app.get("/books", (req, res) => {
-    res.json({ msg: "welcome to the api" });
+    let books = [];
+
+    db.collection("books")
+        .find()
+        .sort({ author: 1 })
+        .forEach((book) => books.push(book))
+        .then(() => {
+            res.status(200).json(books);
+        })
+        .catch(() => {
+            res.status(500).json({ error: "oooops, could not fetch the documents" });
+        });
+
+    // res.json({ msg: "welcome to the api" });
 });
