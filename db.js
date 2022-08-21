@@ -1,12 +1,13 @@
 const { MongoClient } = require("mongodb");
 
+// must require dotenv to hide connection parameters
+require("dotenv").config();
+
 let dbConnection;
 
-const uri =
-    "mongodb+srv://Dusan123:DusaN1234@nodeexpressprojects.xowmjvz.mongodb.net/MongoDBucenje?retryWrites=true&w=majority";
-
 const connectDb = (cb) => {
-    MongoClient.connect(uri)
+    // below is usage of dotenv
+    MongoClient.connect(process.env.MONGO_URI)
         .then((client) => {
             dbConnection = client.db();
             return cb();
